@@ -1,101 +1,109 @@
-import Image from "next/image";
+"use client";
+import TodoList from "@/components/todoList";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [todos, setTodos] = useState<any[]>([]);
+  const [title, setTitle] = useState<any>("");
+  const [description, setDescription] = useState<any>("");
+  const [priorty, setPriorty] = useState<any>("low");
+  const [error, setError] = useState<string>("");
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+  const addTodo = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!title || title.length < 3) {
+      setError("Title must be at least 3 characters long.");
+      return;
+
+      if (!description || description.length < 3) {
+        setError("Description must be at least 3 characters long.");
+        return;
+      }
+
+      setError("");
+
+      const newTodo = {
+        title: title,
+        description: description,
+        status: "pending",
+        priority: priorty,
+      };
+
+      try {
+        const response = await axios.post(
+          "http://localhost:5200/api/todo",
+          newTodo
+        );
+        setTodos((prev: any) => [...prev, response.data.data]);
+        setTitle("");
+        setDescription("");
+        setPriorty("low");
+      } catch (err) {
+        console.log(err);
+        setError("Failed to add the todo. Please try again.");
+      }
+    }
+  };
+
+  useEffect(() => {
+    const getTodos = async () => {
+      try {
+        setError("");
+        const todosResponse = await axios.get("http://localhost:5200/api/todo");
+        setTodos(todosResponse.data.data);
+      } catch (err: any) {
+        console.log(err?.message);
+        setError("Failed to load todos. Please try again.");
+      }
+    };
+    getTodos();
+  }, []);
+
+  return (
+    <div className="p-4 text-center items-center justify-center">
+      <form onSubmit={addTodo}>
+        <input
+          type="text"
+          placeholder="Title"
+          value={title}
+          onChange={(e) => {
+            setTitle(e.target.value);
+            setError("");
+          }}
+          className="border border-black rounded-md p-2 mr-2"
+        />
+        <input
+          type="text"
+          placeholder="Description"
+          value={description}
+          onChange={(e) => {
+            setDescription(e.target.value);
+            setError("");
+          }}
+          className="border border-black rounded-md p-2 mr-2"
+        />
+        <select
+          value={priorty}
+          onChange={(e) => setPriorty(e.target.value)}
+          className="border border-black rounded-md p-2 mr-2"
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
+        <button type="submit" className="bg-black text-white rounded py-2 px-4">
+          Add
+        </button>
+        {error && <span className="text-red-500">{error}</span>}
+      </form>
+      {todos.length > 0 ? (
+        <TodoList data={todos} setData={setTodos} />
+      ) : (
+        <p className="mt-20 text-3xl text-gray-500">
+          No todos available. Add a new one!
+        </p>
+      )}
     </div>
   );
 }
