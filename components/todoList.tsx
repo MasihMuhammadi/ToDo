@@ -28,7 +28,8 @@ const TodoList = ({ data, setData }: { data: any; setData: any }) => {
     try {
       const updatedTodo = await axios.put(
         `https://todo-backend-84rz.onrender.com/api/todo/${editedTodo._id}`,
-        editedTodo
+        editedTodo,
+        { withCredentials: true }
       );
       setData((prevTodos: any) =>
         prevTodos.map((todo: any) =>
@@ -45,7 +46,8 @@ const TodoList = ({ data, setData }: { data: any; setData: any }) => {
   const deleteTodo = async (id: string) => {
     try {
       await axios.delete(
-        `https://todo-backend-84rz.onrender.com/api/todo/${id}`
+        `https://todo-backend-84rz.onrender.com/api/todo/${id}`,
+        { withCredentials: true }
       );
       setData((prevTodos: any) =>
         prevTodos.filter((todo: any) => todo._id !== id)
