@@ -33,7 +33,8 @@ export default function Home() {
       try {
         const response = await axios.post(
           "https://todo-backend-84rz.onrender.com/api/todo",
-          newTodo
+          newTodo,
+          { withCredentials: true }
         );
         setTodos((prev: any) => [...prev, response.data.data]);
         setTitle("");
@@ -51,7 +52,8 @@ export default function Home() {
       try {
         setError("");
         const todosResponse = await axios.get(
-          "https://todo-backend-84rz.onrender.com/api/todo"
+          "https://todo-backend-84rz.onrender.com/api/todo",
+          { withCredentials: true }
         );
         setTodos(todosResponse.data.data);
       } catch (err: any) {
