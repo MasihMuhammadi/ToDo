@@ -27,7 +27,7 @@ const TodoList = ({ data, setData }: { data: any; setData: any }) => {
 
     try {
       const updatedTodo = await axios.put(
-        `http://localhost:5200/api/todo/${editedTodo._id}`,
+        `https://todo-backend-84rz.onrender.com/api/todo/${editedTodo._id}`,
         editedTodo
       );
       setData((prevTodos: any) =>
@@ -44,7 +44,9 @@ const TodoList = ({ data, setData }: { data: any; setData: any }) => {
 
   const deleteTodo = async (id: string) => {
     try {
-      await axios.delete(`http://localhost:5200/api/todo/${id}`);
+      await axios.delete(
+        `https://todo-backend-84rz.onrender.com/api/todo/${id}`
+      );
       setData((prevTodos: any) =>
         prevTodos.filter((todo: any) => todo._id !== id)
       );

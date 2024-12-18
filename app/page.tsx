@@ -32,7 +32,7 @@ export default function Home() {
 
       try {
         const response = await axios.post(
-          "http://localhost:5200/api/todo",
+          "https://todo-backend-84rz.onrender.com/api/todo",
           newTodo
         );
         setTodos((prev: any) => [...prev, response.data.data]);
@@ -50,7 +50,9 @@ export default function Home() {
     const getTodos = async () => {
       try {
         setError("");
-        const todosResponse = await axios.get("http://localhost:5200/api/todo");
+        const todosResponse = await axios.get(
+          "https://todo-backend-84rz.onrender.com/api/todo"
+        );
         setTodos(todosResponse.data.data);
       } catch (err: any) {
         console.log(err?.message);
