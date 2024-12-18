@@ -14,7 +14,7 @@ export default function Home() {
     e.preventDefault();
     if (!title || title.length < 3) {
       setError("Title must be at least 3 characters long.");
-      return;
+      // return;
 
       if (!description || description.length < 3) {
         setError("Description must be at least 3 characters long.");
@@ -66,7 +66,10 @@ export default function Home() {
 
   return (
     <div className="p-4 text-center items-center justify-center">
-      <form onSubmit={addTodo}>
+      <form
+        onSubmit={addTodo}
+        className="flex flex-col md:items-center gap-y-3 md:justify-center items-start justify-start gap-x-2 md:flex-row"
+      >
         <input
           type="text"
           placeholder="Title"
@@ -99,8 +102,8 @@ export default function Home() {
         <button type="submit" className="bg-black text-white rounded py-2 px-4">
           Add
         </button>
-        {error && <span className="text-red-500">{error}</span>}
       </form>
+      {error && <span className="text-red-500">{error}</span>}
       {todos.length > 0 ? (
         <TodoList data={todos} setData={setTodos} />
       ) : (
